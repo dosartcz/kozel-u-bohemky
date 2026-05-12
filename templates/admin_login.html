@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='kozel-u-bohemky-logo-favicon.png') }}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – přihlášení</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='exo2.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script>
+    (function(){
+      var stored = localStorage.getItem('admin_theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+</head>
+<body class="login-page">
+  <div class="login-card">
+    <img src="{{ url_for('static', filename='logo.svg') }}" alt="Kozel u Bohemky" class="login-logo login-logo--light" />
+    <img src="{{ url_for('static', filename='kozel-u-bohemky_logo (white).svg') }}" alt="Kozel u Bohemky" class="login-logo login-logo--dark" />
+    {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+    <form method="post">
+      <div class="form-group">
+        <label for="username">Uživatelské jméno</label>
+        <input type="text" id="username" name="username" placeholder="jméno" autofocus required autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label for="password">Heslo</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top:1rem">Přihlásit se</button>
+    </form>
+  </div>
+</body>
+</html>

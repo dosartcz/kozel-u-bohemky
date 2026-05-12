@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='kozel-u-bohemky-logo-favicon.png') }}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – nastavení</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='exo2.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script>
+    (function(){
+      var stored = localStorage.getItem('admin_theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+</head>
+<body class="admin-page">
+
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <span class="admin-logo">
+        <img src="{{ url_for('static', filename='kozel-ikony-light.svg') }}" class="admin-logo-icon admin-logo-icon--light" alt="" />
+        <img src="{{ url_for('static', filename='kozel-ikony-dark.svg') }}" class="admin-logo-icon admin-logo-icon--dark" alt="" />
+        Kozlův admin
+      </span>
+      <button class="admin-hamburger" id="adminHamburger" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <div class="admin-nav" id="adminNav">
+        <a href="{{ url_for('admin') }}" class="btn btn-ghost"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="3" x2="9" y2="21"/><path d="M7 3v5a2 2 0 004 0V3"/><line x1="15" y1="3" x2="15" y2="21"/><path d="M15 9c2-1 2-5 0-6"/></svg> Polední nabídka</a>
+        <a href="{{ url_for('admin_rezervace') }}" class="btn btn-ghost"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg> Rezervace</a>
+        <a href="{{ url_for('admin_popup') }}" class="btn btn-ghost"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/></svg> Promo</a>
+        <a href="{{ url_for('admin_users') }}" class="btn btn-ghost"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Nastavení</a>
+        <a href="{{ url_for('index') }}" target="_blank" class="btn btn-ghost"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><circle cx="6" cy="6.5" r="1" fill="currentColor" stroke="none"/><circle cx="9.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg> Zobrazit web</a>
+        <a href="{{ url_for('admin_logout') }}" class="btn btn-ghost">Odhlásit se</a>
+      </div>
+      <script>
+        (function(){
+          var btn = document.getElementById('adminHamburger');
+          var nav = document.getElementById('adminNav');
+          if (btn && nav) {
+            btn.addEventListener('click', function(){
+              nav.classList.toggle('admin-nav--open');
+            });
+          }
+        })();
+      </script>
+    </div>
+  </header>
+
+  <main class="admin-main">
+
+    {% if message %}
+    <div class="alert alert-{{ message[0] }}">{{ message[1] }}</div>
+    {% endif %}
+
+    <!-- ── ZMĚNA HESLA ── -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2 class="admin-card-title"><svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> Změna hesla</h2>
+      </div>
+      <p style="margin-bottom:1.25rem;color:var(--color-muted);font-size:.9rem">
+        Přihlášen jako <strong>{{ current_username }}</strong>
+      </p>
+      <form method="post" style="max-width:360px">
+        <input type="hidden" name="action" value="change_password" />
+        <div class="form-group">
+          <label for="current_password">Současné heslo</label>
+          <input type="password" id="current_password" name="current_password"
+                 autocomplete="current-password" required />
+        </div>
+        <div class="form-group">
+          <label for="new_password">Nové heslo</label>
+          <input type="password" id="new_password" name="new_password"
+                 autocomplete="new-password" required minlength="6"
+                 placeholder="min. 6 znaků" />
+        </div>
+        <div class="form-group">
+          <label for="confirm_password">Potvrdit nové heslo</label>
+          <input type="password" id="confirm_password" name="confirm_password"
+                 autocomplete="new-password" required minlength="6" />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Uložit heslo</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ── VZHLED ── -->
+    <section class="admin-card">
+      <div class="admin-card-header">
+        <h2 class="admin-card-title"><svg class="title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> Vzhled</h2>
+      </div>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <label class="theme-toggle" id="themeToggle" title="Přepnout téma" style="cursor:pointer;">
+          <span class="theme-toggle-track"></span>
+        </label>
+        <span id="themeLabel" style="font-size:.9rem;color:var(--color-muted)">Light</span>
+      </div>
+      <p style="margin-top:.75rem;font-size:.82rem;color:var(--color-muted)">
+        Výchozí hodnota odpovídá systémovému nastavení. Ruční volba se uloží do prohlížeče.
+      </p>
+    </section>
+
+  </main>
+
+  <script>
+    (function(){
+      // Inicializace labelu
+      var label = document.getElementById('themeLabel');
+      function updateLabel() {
+        label.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? 'Dark' : 'Light';
+      }
+      updateLabel();
+
+      // Toggle handler
+      var toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+      toggle.addEventListener('click', function(){
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('admin_theme', 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('admin_theme', 'dark');
+        }
+        updateLabel();
+      });
+    })();
+  </script>
+
+
+  <footer class="admin-footer">
+    <p>Tento systém vytvořil Adam &amp; Claude.</p>
+  </footer>
+</body>
+</html>

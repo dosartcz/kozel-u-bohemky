@@ -1,0 +1,68 @@
+{% if active_popup %}
+<div class="popup-overlay" id="sitePopup" aria-modal="true" role="dialog" aria-label="{{ active_popup.title }}" hidden>
+  <div class="popup-box{% if active_popup.image %} popup-box--has-image{% endif %}">
+    <button class="popup-close" id="popupClose" aria-label="Zavřít">&times;</button>
+
+    {% if active_popup.image %}
+    <div class="popup-img-wrap">
+      <img src="{{ url_for('static', filename='popup_images/' ~ active_popup.image) }}"
+           alt="{{ active_popup.title }}" class="popup-img" />
+    </div>
+    {% endif %}
+
+    <div class="popup-body">
+      <h2 class="popup-title">{{ active_popup.title }}</h2>
+
+      {% if active_popup.body %}
+      <p class="popup-text">{{ active_popup.body }}</p>
+      {% endif %}
+
+      {% if active_popup_items %}
+      <div class="popup-items">
+        <div class="popup-items-header">
+          <span class="pi-portion"></span>
+          <span class="pi-name"></span>
+          <span class="pi-price"></span>
+        </div>
+        {% for item in active_popup_items %}
+        <div class="popup-item">
+          <span class="pi-portion">{{ item.portion or '' }}</span>
+          <span class="pi-name">{{ item.name }}</span>
+          <span class="pi-price">{% if item.price %}{{ item.price }}&nbsp;Kč{% endif %}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var POPUP_ID = 'popup_seen_{{ active_popup.id }}';
+  var overlay  = document.getElementById('sitePopup');
+  var closeBtn = document.getElementById('popupClose');
+
+  if (sessionStorage.getItem(POPUP_ID)) return;
+
+  function openPopup() {
+    overlay.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePopup() {
+    overlay.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+    sessionStorage.setItem(POPUP_ID, '1');
+  }
+
+  setTimeout(openPopup, 600);
+  closeBtn.addEventListener('click', closePopup);
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) closePopup();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !overlay.hasAttribute('hidden')) closePopup();
+  });
+})();
+</script>
+{% endif %}

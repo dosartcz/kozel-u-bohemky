@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='kozel-u-bohemky-logo-favicon.png') }}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ info.name }} – Nápojový lístek</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='exo2.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <header>
+
+    <div class="info-bar">
+      <div class="info-bar-inner">
+
+        <div class="info-col info-col-logo">
+          <img src="{{ url_for('static', filename='logo.svg') }}" alt="{{ info.name }}" class="info-logo-img" />
+        </div>
+
+        <div class="info-col">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <polyline points="2,4 12,13 22,4"/>
+            </svg>
+          </div>
+          <div class="contact-text">
+            <span class="contact-title" data-i18n="info.email">Email</span>
+            <a href="mailto:info@kozelubohemky.cz">info@kozelubohemky.cz</a>
+          </div>
+        </div>
+
+        <div class="info-col">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.09 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+          </div>
+          <div class="contact-text">
+            <span class="contact-title" data-i18n="info.phone">Telefon</span>
+            <a href="tel:+420777710712">+420 777 710 712</a>
+          </div>
+        </div>
+
+        <div class="info-col">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div class="contact-text">
+            <span class="contact-title" data-i18n="info.address">Adresa</span>
+            <span>Sportovní 24, Praha 10</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mobile-header-btns">
+        <a href="{{ url_for('index') }}#poledni-nabidka" class="btn btn-secondary" data-i18n="nav.lunch">Polední nabídka</a>
+        <a href="{{ url_for('rezervace') }}" class="btn btn-primary" data-i18n="nav.reservation">Rezervace</a>
+        <button class="mobile-hamburger" id="mobileHamburger" aria-label="Navigace">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6"  x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="mobile-nav-dropdown" id="mobileNavDropdown" hidden>
+          <a href="{{ url_for('jidelni_listek') }}"  data-i18n="nav.food_menu">Jídelní lístek</a>
+          <a href="{{ url_for('napojovy_listek') }}" class="active" data-i18n="nav.drinks_menu">Nápojový lístek</a>
+          <a href="{{ url_for('fotogalerie') }}"  data-i18n="nav.gallery">Fotogalerie</a>
+          <a href="{{ url_for('kontakt') }}"  data-i18n="nav.contact">Kontakt</a>
+          <a href="#" class="lang-btn">EN</a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="main-nav">
+      <div class="main-nav-inner">
+        <a href="{{ url_for('index') }}#poledni-nabidka" data-i18n="nav.lunch">Polední nabídka</a>
+        <a href="{{ url_for('jidelni_listek') }}" data-i18n="nav.food_menu">Jídelní lístek</a>
+        <a href="{{ url_for('napojovy_listek') }}" class="active" data-i18n="nav.drinks_menu">Nápojový lístek</a>
+        <a href="{{ url_for('fotogalerie') }}" data-i18n="nav.gallery">Fotogalerie</a>
+        <a href="{{ url_for('kontakt') }}" data-i18n="nav.contact">Kontakt</a>
+        <a href="{{ url_for('rezervace') }}" class="nav-rezervace" data-i18n="nav.reservation">Rezervace</a>
+        <div class="lang-switcher">
+          <a href="#" class="lang-btn">EN</a>
+        </div>
+      </div>
+    </nav>
+
+  </header>
+
+  <div class="slideshow slideshow--sm">
+    <img id="nl-hero" alt="Kozel u Bohemky" class="slide" style="min-width:100%;height:100%;object-fit:cover;" />
+  </div>
+  <script>
+  (function(){
+    var isMobile = window.innerWidth <= 768;
+    var photos = isMobile ? [
+      "{{ url_for('static', filename='napojovy-listek-hero-01-mob.webp') }}",
+      "{{ url_for('static', filename='napojovy-listek-hero-02-mob.webp') }}",
+      "{{ url_for('static', filename='napojovy-listek-hero-03-mob.webp') }}",
+      "{{ url_for('static', filename='napojovy-listek-hero-04-mob.webp') }}"
+    ] : [
+      "{{ url_for('static', filename='napojovy-listek-hero-01.webp') }}",
+      "{{ url_for('static', filename='napojovy-listek-hero-02.webp') }}",
+      "{{ url_for('static', filename='napojovy-listek-hero-03.webp') }}",
+      "{{ url_for('static', filename='napojovy-listek-hero-04.webp') }}"
+    ];
+    document.getElementById('nl-hero').src = photos[Math.floor(Math.random() * photos.length)];
+  })();
+  </script>
+
+  <main class="container page-layout">
+    <section class="menu-section menu-section--two-col">
+
+      <h1 class="menu-date-text" style="margin-bottom:1.25rem" data-i18n="nl.title">Nápojový lístek</h1>
+      <p class="menu-lang-note" data-i18n="menu.lang_note"></p>
+
+      <div class="menu-category">
+        <h2 class="category-title" id="tankove-pivo" data-i18n="nl.cat.tank">Velkopopovický Kozel z tanku</h2>
+      </div>
+
+      <div class="pivo-druhy">
+        <div class="pivo-druh">
+          <img src="{{ url_for('static', filename='kozel-hladinka.svg') }}" alt="Hladinka" loading="lazy" />
+          <span class="pivo-druh-name">"Hladinka"</span>
+          <span class="pivo-druh-info">0,5 l &nbsp;·&nbsp; 47 Kč</span>
+        </div>
+        <div class="pivo-druh">
+          <img src="{{ url_for('static', filename='kozel-snyt.svg') }}" alt="Šnyt" loading="lazy" />
+          <span class="pivo-druh-name">"Šnyt"</span>
+          <span class="pivo-druh-info">0,25 l &nbsp;·&nbsp; 35 Kč</span>
+        </div>
+        <div class="pivo-druh">
+          <img src="{{ url_for('static', filename='kozel-mliko.svg') }}" alt="Mlíko" loading="lazy" />
+          <span class="pivo-druh-name">"Mlíko"</span>
+          <span class="pivo-druh-info">0,25 l &nbsp;·&nbsp; 35 Kč</span>
+        </div>
+        <div class="pivo-druh">
+          <img src="{{ url_for('static', filename='kozel-maly.svg') }}" alt="Malý Kozel" loading="lazy" />
+          <span class="pivo-druh-name">Malý Kozel</span>
+          <span class="pivo-druh-info">0,3 l &nbsp;·&nbsp; 35 Kč</span>
+        </div>
+      </div>
+
+      <div class="menu-categories">
+
+        <!-- ═══ LEVÝ SLOUPEC ═══ -->
+        <div class="menu-col">
+
+          <!-- Pivo -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.beer">Pivo</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,3 l</span><span class="row-name">Pilsner Urquell ležák</span><span class="row-price">45 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,5 l</span><span class="row-name">Pilsner Urquell ležák</span><span class="row-price">62 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,3 l</span><span class="row-name">Velkopopovický Kozel Černý</span><span class="row-price">35 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,5 l</span><span class="row-name">Velkopopovický Kozel Černý</span><span class="row-price">47 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,3 l</span><span class="row-name">Birell Pomelo &amp; Grep nealko</span><span class="row-price">35 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,5 l</span><span class="row-name">Birell Pomelo &amp; Grep nealko</span><span class="row-price">47 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,33 l</span><span class="row-name">Birell – nealko pivo</span><span class="row-price">40 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,33 l</span><span class="row-name">Frisco</span><span class="row-price">60 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,33 l</span><span class="row-name">Kingswood</span><span class="row-price">60 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Nealkoholické nápoje -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.soft">Nealkoholické nápoje</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,1 l</span><span class="row-name">Kofola</span><span class="row-price">9 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,33 l</span><span class="row-name">Coca Cola</span><span class="row-price">47 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,33 l</span><span class="row-name">Coca Cola Zero</span><span class="row-price">47 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,33 l</span><span class="row-name">Fanta</span><span class="row-price">47 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,33 l</span><span class="row-name">Kinley Tonic</span><span class="row-price">47 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,3 l</span><span class="row-name">Natura neperlivá / jemně perlivá / perlivá</span><span class="row-price">35 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,25 l</span><span class="row-name">Cappy Pomeranč</span><span class="row-price">47 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,25 l</span><span class="row-name">Cappy Jablko</span><span class="row-price">47 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,25 l</span><span class="row-name">Red Bull</span><span class="row-price">70 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Teplé nápoje -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.hot">Teplé nápoje</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion"></span><span class="row-name">Espresso</span><span class="row-price">50 Kč</span></div>
+              <div class="menu-row"><span class="row-portion"></span><span class="row-name">Cappuccino</span><span class="row-price">60 Kč</span></div>
+              <div class="menu-row"><span class="row-portion"></span><span class="row-name">Turecká káva</span><span class="row-price">50 Kč</span></div>
+              <div class="menu-row"><span class="row-portion"></span><span class="row-name">Čaj dle nabídky</span><span class="row-price">50 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Víno, sekt -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.wine">Víno, sekt</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,75 l</span><span class="row-name">Bohemia Sekt</span><span class="row-price">350 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,75 l</span><span class="row-name">Prosecco</span><span class="row-price">450 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,2 l</span><span class="row-name">Veltlínské zelené</span><span class="row-price">60 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,2 l</span><span class="row-name">Chardonnay polosuché</span><span class="row-price">60 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,2 l</span><span class="row-name">Merlot</span><span class="row-price">60 Kč</span></div>
+            </div>
+          </div>
+		  
+          <!-- Bylinné likéry -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.herbal">Bylinné likéry</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Fernet Stock Original</span><span class="row-price">55 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Fernet Stock Citrus</span><span class="row-price">55 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Becherovka</span><span class="row-price">60 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Jägermeister</span><span class="row-price">65 Kč</span></div>
+            </div>
+          </div>
+        </div><!-- /.menu-col (levý) -->
+
+        <!-- ═══ PRAVÝ SLOUPEC ═══ -->
+        <div class="menu-col">
+
+          <!-- Rum -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.rum">Rum</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Havana Club</span><span class="row-price">70 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Božkov Republica Exclusive</span><span class="row-price">65 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Božkov Republica Reserva</span><span class="row-price">75 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Captain Morgan Spiced Gold</span><span class="row-price">65 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Legendario Elixir De Cuba</span><span class="row-price">85 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Bumbu</span><span class="row-price">130 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Diplomatico Reserva Exclusiva</span><span class="row-price">135 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Ron Zacapa 23 Centenario</span><span class="row-price">160 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Tequila -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.tequila">Tequila</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Tres Alegres Compadres Blanco</span><span class="row-price">80 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Tres Alegres Compadres Reposado</span><span class="row-price">80 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Whisky -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.whisky">Whisky</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Tullamore Dew</span><span class="row-price">75 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Jameson</span><span class="row-price">75 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Jack Daniel's</span><span class="row-price">90 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Brandy a koňak -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.brandy">Brandy a koňak</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,02 l</span><span class="row-name">Stará Myslivecká 500years</span><span class="row-price">120 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Gin -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.gin">Gin</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Gordon's London Dry Gin</span><span class="row-price">65 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Gordon's Premium Pink Gin</span><span class="row-price">65 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Vodka -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.vodka">Vodka</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Finlandia</span><span class="row-price">55 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Bylinné likéry -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.herbal">Bylinné likéry</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Fernet Stock Original</span><span class="row-price">55 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Fernet Stock Citrus</span><span class="row-price">55 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Becherovka</span><span class="row-price">60 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Jägermeister</span><span class="row-price">65 Kč</span></div>
+            </div>
+          </div>
+
+          <!-- Ovocné destiláty -->
+          <div class="menu-category">
+            <h2 class="category-title" data-i18n="nl.cat.fruit">Ovocné destiláty</h2>
+            <div class="menu-table">
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Tri stromy Slivovica</span><span class="row-price">75 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Tri stromy Hruškovica</span><span class="row-price">75 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Baron Hildeprandt Ze zralých malin</span><span class="row-price">95 Kč</span></div>
+              <div class="menu-row"><span class="row-portion">0,04 l</span><span class="row-name">Baron Hildeprandt Ze zralých hrušek</span><span class="row-price">95 Kč</span></div>
+            </div>
+          </div>
+
+        </div><!-- /.menu-col (pravý) -->
+
+      </div><!-- /.menu-categories -->
+
+      <img src="{{ url_for('static', filename='kozel-poukazy-banner.jpg') }}" alt="Dárkové poukazy do Kozla u Bohemky" class="menu-voucher-img" />
+
+    </section>
+
+    <aside class="sidebar">
+
+      <div class="sidebar-info">
+        <div class="sidebar-info-section">
+          <div class="sidebar-info-title" data-i18n="sidebar.hours_title">Otevírací doba</div>
+          <div class="sidebar-info-value" data-i18n="sidebar.hours_value">Pondělí až Neděle&nbsp;&nbsp;11:00 – 23:00</div>
+        </div>
+        <div class="sidebar-info-section">
+          <div class="sidebar-info-title" data-i18n="sidebar.lunch_title">Polední nabídka</div>
+          <div class="sidebar-info-value" data-i18n="sidebar.lunch_value">Pondělí až Pátek&nbsp;&nbsp;11:00 – 14:00</div>
+        </div>
+        <div class="sidebar-info-section">
+          <div class="sidebar-info-title" data-i18n="sidebar.cards">Karty bereme</div>
+          <div class="card-icons">
+            <svg class="card-icon" viewBox="0 0 48 30" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="#1A1F71"/>
+              <text x="50%" y="21" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" font-style="italic" fill="#FFFFFF">VISA</text>
+            </svg>
+            <svg class="card-icon" viewBox="0 0 48 30" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="#252525"/>
+              <circle cx="18" cy="15" r="9" fill="#EB001B"/>
+              <circle cx="30" cy="15" r="9" fill="#F79E1B"/>
+              <path d="M24 7.7a9 9 0 0 1 0 14.6A9 9 0 0 1 24 7.7z" fill="#FF5F00"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <a href="{{ url_for('napojovy_listek') }}#tankove-pivo">
+        <picture>
+          <source media="(max-width: 768px)" srcset="{{ url_for('static', filename='tankove-pivo-banner-sq.webp') }}" />
+          <img src="{{ url_for('static', filename='tankove-pivo-banner.webp') }}"
+               alt="Tankové pivo" class="sidebar-banner" />
+        </picture>
+      </a>
+      <a href="https://chytrykviz.cz/kviz/kozel-u-bohemky" target="_blank" rel="noopener">
+        <img src="{{ url_for('static', filename='kviz-banner.webp') }}"
+             alt="Chytrý kvíz" class="sidebar-banner" style="margin-top:.75rem" />
+      </a>
+
+      <img src="{{ url_for('static', filename='kozel-poukazy-banner.jpg') }}" alt="Dárkové poukazy do Kozla u Bohemky" class="menu-voucher-img sidebar-voucher-banner" />
+
+      <div class="sidebar-info" style="margin-top:.75rem; margin-bottom:0">
+        <div class="sidebar-info-title" data-i18n="sidebar.social">Sledujte nás na sítích</div>
+        <div class="social-icons">
+          <a href="https://www.facebook.com/kozelubohemky/" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" fill="#1877F2"/>
+            </svg>
+          </a>
+          <a href="https://www.instagram.com/kozelubohemky" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="ig3" cx="30%" cy="107%" r="150%">
+                  <stop offset="0%" stop-color="#fdf497"/>
+                  <stop offset="5%" stop-color="#fdf497"/>
+                  <stop offset="45%" stop-color="#fd5949"/>
+                  <stop offset="60%" stop-color="#d6249f"/>
+                  <stop offset="90%" stop-color="#285AEB"/>
+                </radialGradient>
+              </defs>
+              <rect width="24" height="24" rx="6" fill="url(#ig3)"/>
+              <rect x="2.5" y="2.5" width="19" height="19" rx="4.5" fill="none" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="12" cy="12" r="4.5" fill="none" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="#fff"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-credit">
+        &copy; {{ info.name }} 2026 &nbsp;&nbsp;|&nbsp;&nbsp; design: <a href="https://dosart.cz" target="_blank" rel="noopener">doSArt</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const track = document.querySelector('.slideshow-track');
+      const dots  = document.querySelectorAll('.slide-dot');
+      const total = document.querySelectorAll('.slide').length;
+      let current = 0, timer;
+      function goTo(n) {
+        current = (n + total) % total;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+      function next() { goTo(current + 1); }
+      function resetAuto() { clearInterval(timer); timer = setInterval(next, 10000); }
+      document.querySelector('.slide-btn--next').addEventListener('click', () => { next(); resetAuto(); });
+      document.querySelector('.slide-btn--prev').addEventListener('click', () => { goTo(current - 1); resetAuto(); });
+      dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); resetAuto(); }));
+      timer = setInterval(next, 10000);
+    })();
+  </script>
+
+  {% include '_popup.html' %}
+  <script>
+  (function() {
+    var btn = document.getElementById('mobileHamburger');
+    var dropdown = document.getElementById('mobileNavDropdown');
+    if (!btn || !dropdown) return;
+    btn.addEventListener('click', function() {
+      var isOpen = !dropdown.hasAttribute('hidden');
+      if (isOpen) {
+        dropdown.setAttribute('hidden', '');
+        btn.classList.remove('is-open');
+      } else {
+        dropdown.removeAttribute('hidden');
+        btn.classList.add('is-open');
+      }
+    });
+  })();
+  </script>
+  {% include '_cookies.html' %}
+  <script src="{{ url_for('static', filename='cookies.js') }}"></script>
+  <script src="{{ url_for('static', filename='i18n.js') }}"></script>
+</body>
+</html>

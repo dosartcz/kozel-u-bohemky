@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='kozel-u-bohemky-logo-favicon.png') }}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ info.name }} – Fotogalerie</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='exo2.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <header>
+
+    <!-- ── INFO BAR ── -->
+    <div class="info-bar">
+      <div class="info-bar-inner">
+
+        <div class="info-col info-col-logo">
+          <img src="{{ url_for('static', filename='logo.svg') }}" alt="{{ info.name }}" class="info-logo-img" />
+        </div>
+
+        <div class="info-col">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <polyline points="2,4 12,13 22,4"/>
+            </svg>
+          </div>
+          <div class="contact-text">
+            <span class="contact-title" data-i18n="info.email">Email</span>
+            <a href="mailto:info@kozelubohemky.cz">info@kozelubohemky.cz</a>
+          </div>
+        </div>
+
+        <div class="info-col">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.09 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+          </div>
+          <div class="contact-text">
+            <span class="contact-title" data-i18n="info.phone">Telefon</span>
+            <a href="tel:+420777710712">+420 777 710 712</a>
+          </div>
+        </div>
+
+        <div class="info-col">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div class="contact-text">
+            <span class="contact-title" data-i18n="info.address">Adresa</span>
+            <span>Sportovní 24, Praha 10</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mobile-header-btns">
+        <a href="{{ url_for('index') }}#poledni-nabidka" class="btn btn-secondary" data-i18n="nav.lunch">Polední nabídka</a>
+        <a href="{{ url_for('rezervace') }}" class="btn btn-primary" data-i18n="nav.reservation">Rezervace</a>
+        <button class="mobile-hamburger" id="mobileHamburger" aria-label="Navigace">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6"  x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="mobile-nav-dropdown" id="mobileNavDropdown" hidden>
+          <a href="{{ url_for('jidelni_listek') }}"  data-i18n="nav.food_menu">Jídelní lístek</a>
+          <a href="{{ url_for('napojovy_listek') }}"  data-i18n="nav.drinks_menu">Nápojový lístek</a>
+          <a href="{{ url_for('fotogalerie') }}" class="active" data-i18n="nav.gallery">Fotogalerie</a>
+          <a href="{{ url_for('kontakt') }}"  data-i18n="nav.contact">Kontakt</a>
+          <a href="#" class="lang-btn">EN</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NAVIGATION ── -->
+    <nav class="main-nav">
+      <div class="main-nav-inner">
+        <a href="{{ url_for('index') }}#poledni-nabidka" data-i18n="nav.lunch">Polední nabídka</a>
+        <a href="{{ url_for('jidelni_listek') }}" data-i18n="nav.food_menu">Jídelní lístek</a>
+        <a href="{{ url_for('napojovy_listek') }}" data-i18n="nav.drinks_menu">Nápojový lístek</a>
+        <a href="{{ url_for('fotogalerie') }}" class="active" data-i18n="nav.gallery">Fotogalerie</a>
+        <a href="{{ url_for('kontakt') }}" data-i18n="nav.contact">Kontakt</a>
+        <a href="{{ url_for('rezervace') }}" class="nav-rezervace" data-i18n="nav.reservation">Rezervace</a>
+        <div class="lang-switcher">
+          <a href="#" class="lang-btn">EN</a>
+        </div>
+      </div>
+    </nav>
+
+  </header>
+
+  <div class="slideshow slideshow--sm">
+    <img id="fg-hero" alt="Kozel u Bohemky" class="slide" style="min-width:100%;height:100%;object-fit:cover;" />
+  </div>
+  <script>
+  (function(){
+    var isMobile = window.innerWidth <= 768;
+    document.getElementById('fg-hero').src = isMobile
+      ? "{{ url_for('static', filename='fotogalerie-hero-mob.webp') }}"
+      : "{{ url_for('static', filename='fotogalerie-hero.webp') }}";
+  })();
+  </script>
+
+  <main class="container page-layout">
+
+    <section class="menu-section gallery-section">
+
+      <h1 class="menu-date-text" style="margin-bottom:1.25rem" data-i18n="fg.title">Fotogalerie</h1>
+
+      <!-- Filtry -->
+      <div class="gallery-filters">
+        <button class="gallery-filter active" data-filter="all" data-i18n="fg.filter.all">Vše</button>
+        <button class="gallery-filter" data-filter="interier" data-i18n="fg.filter.interior">Interiér</button>
+        <button class="gallery-filter" data-filter="jidla" data-i18n="fg.filter.food">Jídla</button>
+      </div>
+
+      <!-- Grid -->
+      <div class="gallery-grid">
+
+        {% for photo in interier %}
+        <div class="gallery-item" data-group="interier">
+          <img src="{{ url_for('static', filename=photo) }}" alt="Interiér" loading="lazy" />
+        </div>
+        {% endfor %}
+
+        {% for photo in jidla %}
+        <div class="gallery-item" data-group="jidla">
+          <img src="{{ url_for('static', filename=photo) }}" alt="Jídla" loading="lazy" />
+        </div>
+        {% endfor %}
+
+      </div>
+
+      <img src="{{ url_for('static', filename='kozel-poukazy-banner.jpg') }}" alt="Dárkové poukazy do Kozla u Bohemky" class="menu-voucher-img" />
+
+    </section>
+
+    <aside class="sidebar">
+
+      <div class="sidebar-info">
+        <div class="sidebar-info-section">
+          <div class="sidebar-info-title" data-i18n="sidebar.hours_title">Otevírací doba</div>
+          <div class="sidebar-info-value" data-i18n="sidebar.hours_value">Pondělí až Neděle&nbsp;&nbsp;11:00 – 23:00</div>
+        </div>
+        <div class="sidebar-info-section">
+          <div class="sidebar-info-title" data-i18n="sidebar.lunch_title">Polední nabídka</div>
+          <div class="sidebar-info-value" data-i18n="sidebar.lunch_value">Pondělí až Pátek&nbsp;&nbsp;11:00 – 14:00</div>
+        </div>
+        <div class="sidebar-info-section">
+          <div class="sidebar-info-title" data-i18n="sidebar.cards">Karty bereme</div>
+          <div class="card-icons">
+            <svg class="card-icon" viewBox="0 0 48 30" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="#1A1F71"/>
+              <text x="50%" y="21" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" font-style="italic" fill="#FFFFFF">VISA</text>
+            </svg>
+            <svg class="card-icon" viewBox="0 0 48 30" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="#252525"/>
+              <circle cx="18" cy="15" r="9" fill="#EB001B"/>
+              <circle cx="30" cy="15" r="9" fill="#F79E1B"/>
+              <path d="M24 7.7a9 9 0 0 1 0 14.6A9 9 0 0 1 24 7.7z" fill="#FF5F00"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <a href="{{ url_for('napojovy_listek') }}#tankove-pivo">
+        <picture>
+          <source media="(max-width: 768px)" srcset="{{ url_for('static', filename='tankove-pivo-banner-sq.webp') }}" />
+          <img src="{{ url_for('static', filename='tankove-pivo-banner.webp') }}"
+               alt="Tankové pivo" class="sidebar-banner" />
+        </picture>
+      </a>
+      <a href="https://chytrykviz.cz/kviz/kozel-u-bohemky" target="_blank" rel="noopener">
+        <img src="{{ url_for('static', filename='kviz-banner.webp') }}"
+             alt="Chytrý kvíz" class="sidebar-banner" style="margin-top:.75rem" />
+      </a>
+
+      <img src="{{ url_for('static', filename='kozel-poukazy-banner.jpg') }}" alt="Dárkové poukazy do Kozla u Bohemky" class="menu-voucher-img sidebar-voucher-banner" />
+
+      <div class="sidebar-info" style="margin-top:.75rem; margin-bottom:0">
+        <div class="sidebar-info-title" data-i18n="sidebar.social">Sledujte nás na sítích</div>
+        <div class="social-icons">
+          <a href="https://www.facebook.com/kozelubohemky/" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" fill="#1877F2"/>
+            </svg>
+          </a>
+          <a href="https://www.instagram.com/kozelubohemky" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="ig-fg" cx="30%" cy="107%" r="150%">
+                  <stop offset="0%" stop-color="#fdf497"/>
+                  <stop offset="5%" stop-color="#fdf497"/>
+                  <stop offset="45%" stop-color="#fd5949"/>
+                  <stop offset="60%" stop-color="#d6249f"/>
+                  <stop offset="90%" stop-color="#285AEB"/>
+                </radialGradient>
+              </defs>
+              <rect width="24" height="24" rx="6" fill="url(#ig-fg)"/>
+              <rect x="2.5" y="2.5" width="19" height="19" rx="4.5" fill="none" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="12" cy="12" r="4.5" fill="none" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="#fff"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" aria-label="Zavřít">&times;</button>
+    <button class="lightbox-prev" aria-label="Předchozí">&#8249;</button>
+    <button class="lightbox-next" aria-label="Další">&#8250;</button>
+    <div class="lightbox-img-wrap">
+      <img class="lightbox-img" src="" alt="" />
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-credit">
+        &copy; {{ info.name }} 2026 &nbsp;&nbsp;|&nbsp;&nbsp; design: <a href="https://dosart.cz" target="_blank" rel="noopener">doSArt</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    const grid     = document.querySelector('.gallery-grid');
+    const filters  = document.querySelectorAll('.gallery-filter');
+    const lightbox = document.getElementById('lightbox');
+    const lbImg    = lightbox.querySelector('.lightbox-img');
+
+    let visible = [], current = 0;
+
+    function getVisible() {
+      return [...grid.querySelectorAll('.gallery-item:not([hidden])')];
+    }
+
+    // ── Filtry ──
+    filters.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filters.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        grid.querySelectorAll('.gallery-item').forEach(item => {
+          item.hidden = f !== 'all' && item.dataset.group !== f;
+        });
+      });
+    });
+
+    // ── Lightbox otevření ──
+    grid.addEventListener('click', e => {
+      const item = e.target.closest('.gallery-item');
+      if (!item) return;
+      visible = getVisible();
+      current = visible.indexOf(item);
+      openLightbox(current);
+    });
+
+    function openLightbox(idx) {
+      current = idx;
+      lbImg.src = visible[idx].querySelector('img').src;
+      lbImg.alt = visible[idx].querySelector('img').alt;
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      lbImg.src = '';
+    }
+
+    lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+    lightbox.querySelector('.lightbox-prev').addEventListener('click', () => {
+      current = (current - 1 + visible.length) % visible.length;
+      openLightbox(current);
+    });
+    lightbox.querySelector('.lightbox-next').addEventListener('click', () => {
+      current = (current + 1) % visible.length;
+      openLightbox(current);
+    });
+
+    // Klik na pozadí zavře
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox || e.target === lightbox.querySelector('.lightbox-img-wrap')) closeLightbox();
+    });
+
+    // Klávesnice
+    document.addEventListener('keydown', e => {
+      if (!lightbox.classList.contains('is-open')) return;
+      if (e.key === 'Escape')      closeLightbox();
+      if (e.key === 'ArrowLeft')  { current = (current - 1 + visible.length) % visible.length; openLightbox(current); }
+      if (e.key === 'ArrowRight') { current = (current + 1) % visible.length; openLightbox(current); }
+    });
+  })();
+  </script>
+
+  {% include '_popup.html' %}
+  <script>
+  (function() {
+    var btn = document.getElementById('mobileHamburger');
+    var dropdown = document.getElementById('mobileNavDropdown');
+    if (!btn || !dropdown) return;
+    btn.addEventListener('click', function() {
+      var isOpen = !dropdown.hasAttribute('hidden');
+      if (isOpen) {
+        dropdown.setAttribute('hidden', '');
+        btn.classList.remove('is-open');
+      } else {
+        dropdown.removeAttribute('hidden');
+        btn.classList.add('is-open');
+      }
+    });
+  })();
+  </script>
+  {% include '_cookies.html' %}
+  <script src="{{ url_for('static', filename='cookies.js') }}"></script>
+  <script src="{{ url_for('static', filename='i18n.js') }}"></script>
+</body>
+</html>

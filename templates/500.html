@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='kozel-u-bohemky-logo-favicon.png') }}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technická chyba – Kozel u Bohemky</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='exo2.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    .error-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: url('{{ url_for("static", filename="admin-bg.webp") }}') center/cover no-repeat fixed;
+    }
+    .error-card {
+      background: var(--color-card, #fff);
+      border-radius: 14px;
+      box-shadow: 0 4px 32px rgba(0,0,0,.12);
+      padding: 52px 44px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+    [data-theme="dark"] .error-card { background: #1e1e1e; }
+    .error-code {
+      font-size: 5rem;
+      font-weight: 700;
+      color: #9f854d;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .error-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--color-text, #333);
+      margin-bottom: 12px;
+    }
+    .error-text {
+      font-size: 15px;
+      color: var(--color-muted, #888);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+    .error-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .error-links a.btn-primary { text-decoration: none; }
+    .error-links a.btn-ghost  { text-decoration: none; }
+    .error-logo {
+      height: 40px;
+      margin-bottom: 28px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .error-logo--dark  { display: none; }
+    [data-theme="dark"] .error-logo--light { display: none; }
+    [data-theme="dark"] .error-logo--dark  { display: block; }
+  </style>
+  <script>
+    (function(){
+      var stored = localStorage.getItem('admin_theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+</head>
+<body class="error-page">
+  <div class="error-card">
+    <img src="{{ url_for('static', filename='logo.svg') }}"
+         alt="Kozel u Bohemky" class="error-logo error-logo--light" />
+    <img src="{{ url_for('static', filename='kozel-u-bohemky_logo (white).svg') }}"
+         alt="Kozel u Bohemky" class="error-logo error-logo--dark" />
+    <div class="error-code">500</div>
+    <div class="error-title">Technická chyba</div>
+    <p class="error-text">
+      Na serveru nastala neočekávaná chyba. Omlouváme se za komplikace.<br>
+      Zkuste stránku načíst znovu, nebo se vraťte na úvod.
+    </p>
+    <div class="error-links">
+      <a href="{{ url_for('index') }}" class="btn btn-primary">Zpět na úvod</a>
+      <a href="{{ url_for('rezervace') }}" class="btn btn-ghost">Rezervace</a>
+    </div>
+  </div>
+</body>
+</html>
